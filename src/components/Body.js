@@ -2,61 +2,31 @@ import React, { useState, useEffect } from "react";
 import RestaurantCard from "./RestaurantCard";
 import resList from "../utils/mockData";
 
-let listOfRes = [{
-    "info": {
-      "id": "188458",
-      "name": "KFC",
-      "cloudinaryImageId": "f01666ac73626461d7455d9c24005cd4",
-      "costForTwo": "₹400 for two",
-      "cuisines": [
-        "Burgers",
-        "Biryani",
-        "American",
-        "Snacks",
-        "Fast Food"
-      ],
-      "avgRating": 4.2,
-        "deliveryTime": 23,
-          }
-  },
-
-  {
-    "info": {
-      "id": "188459",
-      "name": "MAC D",
-      "cloudinaryImageId": "f01666ac73626461d7455d9c24005cd4",
-      "costForTwo": "₹400 for two",
-      "cuisines": [
-        "Burgers",
-        "Biryani",
-        "American",
-        "Snacks",
-        "Fast Food"
-      ],
-      "avgRating": 4.1,
-        "deliveryTime": 23,
-          }
-  },
-  {
-    "info": {
-      "id": "188457",
-      "name": "MAC D",
-      "cloudinaryImageId": "f01666ac73626461d7455d9c24005cd4",
-      "costForTwo": "₹400 for two",
-      "cuisines": [
-        "Burgers",
-        "Biryani",
-        "American",
-        "Snacks",
-        "Fast Food"
-      ],
-      "avgRating": 3,
-        "deliveryTime": 23,
-          }
-  },];
 
 const Body = () => {
+// Normal variable
 
+  //  let listOfRes2 = [];
+
+//state variable- super powerful variable
+
+const [listOfRes, setListOfRes] = useState(resList);
+
+useEffect(()=>{
+   fetchData();
+},[]);
+
+const fetchData = async()=>{
+
+
+   
+  const data =await fetch("https://www.swiggy.com/mapi/homepage/getCards?lat=21.1458004&lng=79.0881546");
+  const json = await data.json();
+
+  console.log("json data", data);
+  setListOfRes(json.data?.success?.cards[1]?.gridWidget?.gridElements?.infoWithStyle?.restaurants);
+  console.log(listOfRes);
+}
 
 
     return (
@@ -65,10 +35,10 @@ const Body = () => {
                 <button
                     className="filter-btn"
                     onClick={()=>{
-                       listOfRes =  listOfRes.filter(
+                      const filteredList =  listOfRes.filter(
                         (res) => res.info.avgRating >4
                        );
-                       console.log(listOfRes);
+                       setListOfRes(filteredList);
                     }}
                 >
                     Top Rated Restaurants
