@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RestaurantCard from "./RestaurantCard";
 import resList from "../utils/mockData";
-
+import Shimmer from "./Shimmer";
 
 const Body = () => {
 // Normal variable
@@ -10,33 +10,36 @@ const Body = () => {
 
 //state variable- super powerful variable
 
-const [listOfRes, setListOfRes] = useState(resList);
+const [listOfRes, setListOfRes] = useState([]);
 
 useEffect(()=>{
    fetchData();
 },[]);
 
 const fetchData = async()=>{
-
-
-   
-  const data =await fetch("https://www.swiggy.com/mapi/homepage/getCards?lat=21.1458004&lng=79.0881546");
+  
+  const data =await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=21.1458004&lng=79.0881546&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+ 
   const json = await data.json();
 
+
   console.log("json data", data);
-  setListOfRes(json.data?.success?.cards[1]?.gridWidget?.gridElements?.infoWithStyle?.restaurants);
+  
+  //optional chaining
+  setListOfRes(json.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
   console.log(listOfRes);
 }
 
+//conditional rendering
 
-    return (
+    return listOfRes.length === 0 ? <Shimmer/> :(
         <div className="body">
             <div className="filter">
                 <button
-                    className="filter-btn"
+                    className="filter-btn, button"
                     onClick={()=>{
                       const filteredList =  listOfRes.filter(
-                        (res) => res.info.avgRating >4
+                        (res) => res.info.avgRating >4.2
                        );
                        setListOfRes(filteredList);
                     }}
